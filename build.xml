@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!-- WARNING: Eclipse auto-generated file.
+              Any modifications will be overwritten.
+              To include a user specific buildfile here, simply create one in the same
+              directory with the processing instruction <?eclipse.ant.import?>
+              as the first entry and export the buildfile again. -->
+<project name="Seleniumtest" default="run" basedir=".">
+<!-- ________________________initialize properties____________________________ -->
+    <property environment="env"/>
+    <property name="ws.home" value="."/>
+    <property name="ws.jars" value="${ws.home}/lib"/>
+    <property name="test.dest" value="${ws.home}/build"/>
+    <property name="test.src" value="${ws.home}/src"/>
+    <property name="ng.result" value="test-output"/>
+     
+    
+	   
+           <!-- <fileset dir="${ws.jars}" includes="*.jar"/> -->
+	    	<target name="setClassPath" unless="${test.classpath}">
+	    	      <path id="classpath_jars">
+	    	       <pathelement location="${ws.jars}/BrowsermobProxy/browsermob-proxy-2.0-beta-10-SNAPSHOT.jar"/>
+	    	               <pathelement location="${ws.jars}/selenium-java-2.45.0.jar"/>
+	    	               <pathelement location="${ws.jars}/selenium-java-2.44.0-srcs.jar"/>
+	    	               <pathelement location="${ws.jars}/selenium-server-standalone-2.45.0.jar"/>
+	    	              
+	    	              
+	    	              
+        </path>
+    	<pathconvert pathsep=";" property="test.classpath" refid="classpath_jars"/>
+    </target>
+	
+    <!-- Prior to this, set the ANT location in the Environment variable. Eclipse by default has the ANT bundled.-->            
+    <target name="init" depends="setClassPath">
+     	<tstamp>
+            <format property="start.time" pattern="MM/dd/yyyy hh:mm aa" offset="-5" unit="hour"/>
+        </tstamp>
+        <condition property="ANT" value="${env.ANT_HOME}/bin/ant.bat" else="${env.ANT_HOME}/bin/ant"> 
+        	<os family="windows"/>
+        </condition>
+        <taskdef name="testng" classpath="${test.classpath}" classname="org.testng.TestNGAntTask"/>
+    </target>
+                                
+    <!--clean-->
+    <target name="clean"> 
+    	<echo message="Cleaning destination directory..."/>
+        <delete dir="${test.dest}"/>
+    </target>
+                
+    <!--compile-->
+    <target name="compile" depends="init, clean">				<!-- INit removed-->
+    	<delete includeemptydirs="true" quiet="true">
+        	<fileset dir="${test.dest}" includes="**/*"/>
+        </delete>
+        <echo message="Making directory..."/>
+        <mkdir dir="${test.dest}"/>
+        <echo message="classpath...: ${test.classpath}"/>
+        <echo message="Compiling..."/>
+        <fileset dir="${ws.jars}" includes="${test.classpath}"/>
+    	<echo message="Using Java version ${ant.java.version}."/>
+        <javac  debug="true" destdir="${test.dest}" srcdir="${test.src}"  includeantruntime="false">    
+			<compilerarg value="-Xlint:deprecation"/>
+			<compilerarg value="-Xlint:unchecked"/>
+        	<classpath path="${test.classpath}"/>
+        </javac>
+     </target>
+                
+     <!--run-->
+     <target name="run" depends="compile">
+     	<testng classpath="${test.classpath}: ${test.dest}" suitename="RegistrationValidation">
+        	<xmlfileset dir="${ws.home}/testng_xmls" includes="Ashish.xml"/>
+        </testng> 	
+     </target>
+	   <target name="test" depends="compile">
+    	<testng classpath="${test.classpath}: ${test.dest}" suitename="SampleTestSuite">
+       	<xmlfileset dir="${ws.home}" includes="testng.xml"/>
+       </testng> 
+    </target>
+
+    <target name="Window-All" depends="compile">
+    	<testng classpath="${test.classpath}: ${test.dest}" suitename="SiteCoreSuite">
+       	<xmlfileset dir="${ws.home}/testng_xmls" includes="Win_IE_FF_CH.xml"/>
+       </testng> 
+    </target>
+	
+    <target name="Window-CH-FF" depends="compile">
+    	<testng classpath="${test.classpath}: ${test.dest}" suitename="SiteCoreSuite">
+       	<xmlfileset dir="${ws.home}/testng_xmls" includes="Win_FF_CH.xml"/>
+       </testng> 
+    </target>
+    <target name="Failed" depends="compile">
+    	<testng classpath="${test.classpath}: ${test.dest}" suitename="SiteCoreSuite">
+       	<xmlfileset dir="${ws.home}/test-output/" includes="testng-failed.xml"/>
+       </testng> 
+    </target>
+	<target name="CH-IE-iPhone" depends="compile">
+	    	<testng classpath="${test.classpath}: ${test.dest}" suitename="Smoke Using Production Checklist Scenario on Phoenix Prod Env">
+	       	<xmlfileset dir="${ws.home}/testng_xmls/DailyProductionXML's" includes="testng_Production_CH_IE_iPhone.xml"/>
+	       </testng> 
+	</target>
+	
+	<target name="Sunday" depends="compile">
+		<testng classpath="${test.classpath}: ${test.dest}" suitename="Phoenix Automation">
+		<xmlfileset dir="${ws.home}/testng_xmls/DailyProductionXML's" includes="testng_prod_CH_Android_monday.xml"/>
+		</testng> 
+	</target>
+	<target name="Monday" depends="compile">
+		<testng classpath="${test.classpath}: ${test.dest}" suitename="Phoenix Automation">
+		<xmlfileset dir="${ws.home}/testng_xmls/DailyProductionXML's" includes="testng_prod_IE_iPhone_tuesday.xml"/>
+		</testng> 
+	</target>
+		<target name="IPHONE" depends="compile">
+		<testng classpath="${test.classpath}: ${test.dest}" suitename="Phoenix_VerificationOn_iPhone">
+		<xmlfileset dir="${ws.home}/testng_xmls/DailyProductionXML's" includes="testng_prod_iPhone.xml"/>
+		</testng> 
+	</target>
+	<target name="Tuesday" depends="compile">
+		<testng classpath="${test.classpath}: ${test.dest}" suitename="Phoenix Automation">
+		<xmlfileset dir="${ws.home}/testng_xmls/DailyProductionXML's" includes="testng_prod_FF_IPad_wednesday.xml"/>
+		</testng> 
+	</target>
+	<target name="Wednesday" depends="compile">
+		<testng classpath="${test.classpath}: ${test.dest}" suitename="Phoenix Automation">
+		<xmlfileset dir="${ws.home}/testng_xmls/DailyProductionXML's" includes="testng_prod_Safari_iPad_thrusday.xml"/>
+		</testng> 
+	</target>
+	<target name="Thursday" depends="compile">
+		<testng classpath="${test.classpath}: ${test.dest}" suitename="Phoenix Automation">
+		<xmlfileset dir="${ws.home}/testng_xmls/DailyProductionXML's" includes="testng_prod_IE_Chrome_friday.xml"/>
+		</testng> 
+	</target>
+	
+	<target name="critical_stag" depends="compile">
+	    	<testng classpath="${test.classpath}: ${test.dest}" suitename="Critical">
+	       	<xmlfileset dir="${ws.home}/testng_xmls/LowerEnvironmentExecution" includes="testng_Critical_Stag.xml"/>
+	       </testng> 
+	</target>
+	
+	<target name="critical_major" depends="compile">
+		    	<testng classpath="${test.classpath}: ${test.dest}" suitename="Critical">
+		       	<xmlfileset dir="${ws.home}/testng_xmls/LowerEnvironmentExecution" includes="testng_Critical_Major_QA_3T-3WC.xml"/>
+		       </testng> 
+		</target>
+	
+	<target name="buildSignOff" depends="compile">
+		    	<testng classpath="${test.classpath}: ${test.dest}" suitename="Critical">
+		       	<xmlfileset dir="${ws.home}/testng_xmls/LowerEnvironmentExecution" includes="testng_ProdCheckList_6T_Grid_CH.xml"/>
+		       </testng> 
+		</target>
+		
+	<target name="buildSignOff5T" depends="compile">
+		    	<testng classpath="${test.classpath}: ${test.dest}" suitename="Prod5">
+		       	<xmlfileset dir="${ws.home}/testng_xmls/LowerEnvironmentExecution" includes="testng_ProdCheckList_5T_Grid_CH.xml"/>
+		       </testng> 
+		</target>
+		
+	<target name="cmqa" depends="compile">
+	    	<testng classpath="${test.classpath}: ${test.dest}" suitename="Critical">
+	       	<xmlfileset dir="${ws.home}/testng_xmls/LowerEnvironmentExecution" includes="testng_Critical_Major_QA_6T-6WC.xml"/>
+	       </testng> 
+	</target>
+	
+	<target name="cmstag" depends="compile">
+	    	<testng classpath="${test.classpath}: ${test.dest}" suitename="Critical">
+	       	<xmlfileset dir="${ws.home}/testng_xmls/LowerEnvironmentExecution" includes="testng_Critical_Major_Stag_6T-6WC.xml"/>
+	       </testng> 
+	</target>
+
+	<target name="pcchrome" depends="compile">
+	    	<testng classpath="${test.classpath}: ${test.dest}" suitename="PhoenixAutomationOnChrome">
+	       	<xmlfileset dir="${ws.home}/testng_xmls" includes="testng_CH.xml"/>
+	       </testng> 
+	</target>
+	
+	<path id="test.c">
+		<fileset dir="${ws.jars}" includes="*.jar"/>
+	</path>
+	
+	<!-- run these targets as part of the jenkins job (run on 4 FF threads)-->
+	<target name="Smoke4ThreadsJenkinsFF" depends="compile">
+	    	<testng classpath="${test.classpath}: ${test.dest}" suitename="Smoke4ThreadsJenkinsFF">
+	       	<xmlfileset dir="${ws.home}/testng_xmls/jenkinsXML/dailyRun" includes="testng_ProdSmokeCheckList_4T_Grid_Jenkins_FF.xml"/>
+	       </testng> 
+	</target>
+	
+	<!-- run these targets as part of the jenkins job (run on 5 CH threads)-->
+	<target name="Smoke5ThreadsJenkinsCH" depends="compile">
+	    	<testng classpath="${test.classpath}: ${test.dest}" suitename="Smoke5ThreadsJenkinsCH">
+	       	<xmlfileset dir="${ws.home}/testng_xmls/jenkinsXML/dailyRun" includes="testng_ProdSmokeCheckList_5T_Grid_Jenkins_CH.xml"/>
+	       </testng> 
+	</target>
+	
+	<!-- run these targets as part of the jenkins job (run on 1 IE threads)-->
+	<target name="Smoke1ThreadsJenkinsIE" depends="compile">
+	    	<testng classpath="${test.classpath}: ${test.dest}" suitename="Smoke1ThreadsJenkinsIE">
+	       	<xmlfileset dir="${ws.home}/testng_xmls/jenkinsXML/dailyRun" includes="testng_ProdSmokeCheckList_1T_Grid_Jenkins_IE.xml"/>
+	       </testng> 
+	</target>
+	
+	<!-- run these targets as part of the jenkins job (run on 2 Safari threads)-->
+	<target name="Smoke2ThreadsJenkinsSafari" depends="compile">
+	    	<testng classpath="${test.classpath}: ${test.dest}" suitename="Smoke2ThreadsJenkinsSafari">
+	       	<xmlfileset dir="${ws.home}/testng_xmls/jenkinsXML/dailyRun" includes="testng_ProdSmokeCheckList_2T_Grid_Jenkins_Safari.xml"/>
+	       </testng> 
+	</target>
+	
+	<!-- run these targets as part of the jenkins job (run on 2 iPhone threads)-->
+	<target name="Smoke2ThreadsJenkinsiPhone" depends="compile">
+	    	<testng classpath="${test.classpath}: ${test.dest}" suitename="Smoke2ThreadsJenkinsiPhone">
+	       	<xmlfileset dir="${ws.home}/testng_xmls/jenkinsXML/dailyRun" includes="testng_ProdSmokeCheckList_2T_Grid_Jenkins_iPhone.xml"/>
+	       </testng> 
+	</target>
+	
+	<!-- run these targets as part of the jenkins job (run on 2 iPhone threads)-->
+	<target name="Smoke1ThreadsJenkinsAndroidChromeAndIPhone" depends="compile">
+	    	<testng classpath="${test.classpath}: ${test.dest}" suitename="Smoke1ThreadsJenkinsAndroidChromeAndIPhone">
+	       	<xmlfileset dir="${ws.home}/testng_xmls/jenkinsXML/dailyRun" includes="testng_ProdSmokeCheckList_Grid_Jenkins_AndroidCH_Iphone.xml"/>
+	       </testng> 
+	</target>
+	
+	<!-- run these targets as part of the jenkins job (run on 5 Chrome threads final)-->
+	<target name="FinalSmoke7ThreadsJenkinsCH" depends="compile">
+	    	<testng classpath="${test.classpath}: ${test.dest}" suitename="FinalSmoke7ThreadsJenkinsCH">
+	       	<xmlfileset dir="${ws.home}/testng_xmls/jenkinsXML/finalxml" includes="testng_ProdSmokeCheckList_7T_Grid_Jenkins_CH.xml"/>
+	       </testng> 
+	</target>
+	
+	<!-- run these targets as part of the jenkins job (run on 5 Firefox threads final)-->
+	<target name="FinalSmoke5ThreadsJenkinsFFF" depends="compile">
+	    	<testng classpath="${test.classpath}: ${test.dest}" suitename="FinalSmoke5ThreadsJenkinsFFF">
+	       	<xmlfileset dir="${ws.home}/testng_xmls/jenkinsXML/finalxml/firefox" includes="testng_ProdSmokeCheckList_5T_Grid_Jenkins_FF.xml"/>
+	       </testng> 
+	</target>
+	
+	<!-- run these targets as part of the jenkins job (run on 5 Chrome threads final)-->
+	<target name="FinalSmoke7HotFixThreadsJenkinsCH" depends="compile">
+	    	<testng classpath="${test.classpath}: ${test.dest}" suitename="FinalSmoke7HotFixThreadsJenkinsCH">
+	       	<xmlfileset dir="${ws.home}/testng_xmls/jenkinsXML/finalxml" includes="testng_HotFixSmokeCheckList_7T_Grid_Jenkins_CH.xml"/>
+	       </testng> 
+	</target>
+	
+	<!-- run these targets as part of the jenkins job (run on 5 Chrome threads final)-->
+	<target name="FinalSmoke5HotFixThreadsJenkinsCHProd" depends="compile">
+	    	<testng classpath="${test.classpath}: ${test.dest}" suitename="FinalSmoke5HotFixThreadsJenkinsCHProd">
+	       	<xmlfileset dir="${ws.home}/testng_xmls/jenkinsXML" includes="testng_HotFixSmokeCheckList_5T_Grid_Jenkins_CHProd.xml"/>
+	       </testng> 
+	</target>
+	
+
+	<!-- run these targets as part of the jenkins job (run on 2 Safari threads)-->
+	<target name="runclasses" depends="compile">
+	    	<testng classpath="${test.classpath}: ${test.dest}" suitename="runclasses">
+	       	<xmlfileset dir="${ws.home}/testng_xmls/jenkinsXML/dailyRun" includes="testng_critical_torunclasses.xml"/>
+	       </testng> 
+	</target>
+	
+	<!-- run these targets as part of the jenkins job (run on 12 Chrome-Firefox threads)-->
+	<target name="FinalSmoke12ThreadsJenkinsCH" depends="compile">
+	    	<testng classpath="${test.classpath}: ${test.dest}" suitename="FinalSmoke12ThreadsJenkinsCH">
+	       	<xmlfileset dir="${ws.home}/testng_xmls/jenkinsXML/multinodes" includes="testng_ProdSmokeCheckList_12T_Grid_Jenkins_CH.xml"/>
+	       </testng> 
+	</target>
+	
+	<!-- run these targets as part of the jenkins job (run on 12 Chrome-Firefox threads)-->
+	<target name="FinalSmoke12HotfixThreadsJenkins" depends="compile">
+	    	<testng classpath="${test.classpath}: ${test.dest}" suitename="FinalSmoke12HotfixThreadsJenkins">
+	       	<xmlfileset dir="${ws.home}/testng_xmls/jenkinsXML/multinodes" includes="testng_HotFixSmokeCheckList_12T_Grid_Jenkins_CH.xml"/>
+	       </testng> 
+	</target>
+	
+	<!-- run these targets as part of the jenkins job (run on 6 Chrome threads)-->
+	<target name="CriticalAndMajor" depends="compile">
+	    	<testng classpath="${test.classpath}: ${test.dest}" suitename="CriticalAndMajor">
+	       	<xmlfileset dir="${ws.home}/testng_xmls/LowerEnvironmentExecution" includes="CriticalAndMajor.xml"/>
+	       </testng> 
+	</target>
+	
+	<!-- run these targets as part of the jenkins job (run on 12 threads)-->
+	<target name="CriticalAndMajorNew1_10" depends="compile">
+	    	<testng classpath="${test.classpath}: ${test.dest}" suitename="CriticalAndMajorNew1_10">
+	       	<xmlfileset dir="${ws.home}/testng_xmls/LowerEnvironmentExecution" includes="CriticalAndMajorNew1.xml"/>
+	       </testng> 
+	</target>
+	
+	<!-- run these targets as part of the jenkins job (run on 1 IE threads)-->
+	<target name="Smoke1ThreadsJenkinsAndroidChrome" depends="compile">
+	    	<testng classpath="${test.classpath}: ${test.dest}" suitename="Smoke1ThreadsJenkinsAndroidChrome">
+	       	<xmlfileset dir="${ws.home}/testng_xmls/jenkinsXML/dailyRun" includes="testng_ProdSmokeCheckList_1T_Grid_Jenkins_AndroidCH.xml"/>
+	       </testng> 
+	</target>
+	
+	<target name="ForRNDPurposeOnly" depends="compile">
+	    	<testng classpath="${test.classpath}: ${test.dest}" suitename="ForRNDPurposeOnly">
+	       	<xmlfileset dir="${ws.home}/testng_xmls/jenkinsXML" includes="RNDPurposeOnly.xml"/>
+	       </testng> 
+	</target>
+	
+	<target name="heeraRNDPurpose" depends="compile">
+	    	<testng classpath="${test.classpath}: ${test.dest}" suitename="heeraRNDPurpose">
+	       	<xmlfileset dir="${ws.home}/testng_xmls/jenkinsXML/dailyRun" includes="testng_heera.xml"/>
+	       </testng> 
+	</target>
+</project>
+
