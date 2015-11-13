@@ -13,12 +13,13 @@ public class test {
 	
 	@Test 
 	public void StartPage(){
-		  
+	System.out.println("Tesing Jenkins");
 		Assert.fail();
 		//System.out.println("openpage");
 		//driver.navigate().to("https://google.com");
 		//System.out.println("pageopened");
 	}
+	
 	@Test 
 	public void TestCase1(){
 		   
