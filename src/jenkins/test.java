@@ -21,7 +21,7 @@ public class test {
 	}
 	
 	@Test 
-	public void TestCase1(){
+	public void TestCase2(){
 		   
 		System.out.println("openpage");
 		//driver.navigate().to("https://google.com");
